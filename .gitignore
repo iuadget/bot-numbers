@@ -1,3 +1,4 @@
 .idea
 .target
-.config
+/config/config.properties
+/target
