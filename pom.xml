@@ -27,22 +27,15 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.iuadget</groupId>
-            <artifactId>tbot-numbers</artifactId>
-            <version>master-SNAPSHOT</version>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>3.5</version>
         </dependency>
 
         <dependency>
             <groupId>org.telegram</groupId>
-            <artifactId>telegrambots</artifactId>
-            <version>Latest</version>
+            <artifactId>telegrambots-abilities</artifactId>
+            <version>3.5</version>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
 </project>
