@@ -2,3 +2,5 @@
 .target
 /config/config.properties
 /target
+.java-getting-started
+java-getting-started
