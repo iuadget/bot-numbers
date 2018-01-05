@@ -9,11 +9,14 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.Objects;
+import java.util.Locale;
 
 public class HlamoBot extends TelegramLongPollingBot {
+
     @Override
     public void onUpdateReceived(Update update) {
 
@@ -23,43 +26,103 @@ public class HlamoBot extends TelegramLongPollingBot {
         long user_id = update.getMessage().getChat().getId();
         long chat_id = update.getMessage().getChatId();
 
-//        if (update.hasMessage() && update.getMessage().hasText()) {
-            String message_text_hello = "Добро пожаловать, " + user_first_name + "!" + "\n"
-                    + "Введите число:";
-
-            SendMessage message_hello = new SendMessage() // Create a message object object
-                    .setChatId(chat_id)
-                    .setText(message_text_hello);
-            try {
-                execute(message_hello); // Sending our message object to user
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-//        }
-
         // We check if the update has a message and the message has text
         if (update.hasMessage() && update.getMessage().hasText()) {
 
+            String message_text = update.getMessage().getText();
+
+            if (message_text.chars().allMatch( Character::isDigit )) {
                 LocalDate today = LocalDate.now();
                 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.YYYY");
                 int interval = Integer.parseInt(update.getMessage().getText());
 
-                String message_text = "Текущая дата: " + dateTimeFormatter.format(today) + ".\n"
+                String message_text_data = "Текущая дата: " + dateTimeFormatter.format(today) + ".\n"
                         + "через " + update.getMessage().getText() + " дней " + "будет: " +
                         dateTimeFormatter.format(today.plusDays(interval));
                 String answer = message_text;
 
-                SendMessage message = new SendMessage() // Create a message object object
+                SendMessage message = new SendMessage()
                         .setChatId(chat_id)
-                        .setText(message_text);
+                        .setText(message_text_data);
 
                 log(user_first_name, user_last_name, Long.toString(user_id), message_text, answer);
                 try {
-                    execute(message); // Sending our message object to user
+                    execute(message);
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
+            } else if ((message_text.toLowerCase().contains(".".toLowerCase()))) {
+                //TODO расчте разницы до текущей и после текущей даты
+                try {
+                    LocalDate today = LocalDate.now();
+
+                    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd",Locale.ENGLISH);
+                    LocalDate userDate = LocalDate.parse(message_text, format);
+
+                    Period p = Period.between(today, userDate);
+                    long p2 = ChronoUnit.DAYS.between(today, userDate);
+
+                    String message_text_data = "Разница между датами " +
+                            p.getYears() + " года(-ов), и " +
+                            p.getMonths() + " месяца(-ов), и " +
+                            p.getDays() + " дня(-ей). (" +
+                            "всего " +p2 + " дня(-ей)";
+
+                    SendMessage message = new SendMessage()
+                            .setChatId(chat_id)
+                            .setText(message_text_data);
+                    String answer = message_text;
+
+                    log(user_first_name, user_last_name, Long.toString(user_id), message_text, answer);
+                    try {
+                        execute(message);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+
+                }
+
+            } else if (!(message_text.chars().allMatch( Character::isDigit ))
+                    && !(message_text.toLowerCase().contains("/".toLowerCase()))
+                    && !(message_text.toLowerCase().contains(".".toLowerCase()))) {
+
+                String messageSend = "Вы ввели: " + message_text;
+                SendMessage message = new SendMessage().setChatId(chat_id).setText(messageSend);
+                String answer = message_text;
+
+                log(user_first_name, user_last_name, Long.toString(user_id), message_text, answer);
+                try {
+                    execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+
             }
+
+            switch (message_text) {
+
+                case "/hello":
+                    String message_text_hello = "Добро пожаловать, " + user_first_name + " " +
+                            user_last_name +"!" + "\n" + "Введите целое число или дату (ГГГГ.ММ.ДД).";
+
+                    SendMessage message_hello = new SendMessage()
+                            .setChatId(chat_id)
+                            .setText(message_text_hello);
+                    String answer = message_text;
+
+                    log(user_first_name, user_last_name, Long.toString(user_id), message_text, answer);
+                    try {
+                        execute(message_hello);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+            }
+
+        }
 
     }
 
@@ -80,7 +143,8 @@ public class HlamoBot extends TelegramLongPollingBot {
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY HH:mm:ss");
         Date date = new Date();
         System.out.println(dateFormat.format(date));
-        System.out.println("Message from " + first_name + " " + last_name + ". (id = " + user_id + ") \n Text - " + txt);
-        System.out.println("Bot answer: \n Text - " + bot_answer);
+        System.out.println("Сообщение от " + first_name + " " + last_name +
+                ". (id = " + user_id + ") \n Текст - " + txt);
+        System.out.println("Бот ответил: \n Текст - " + bot_answer);
     }
 }
