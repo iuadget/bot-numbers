@@ -33,7 +33,7 @@ public class HlamoBot extends TelegramLongPollingBot {
 
             if (message_text.chars().allMatch( Character::isDigit )) {
                 LocalDate today = LocalDate.now();
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.YYYY");
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd",Locale.ENGLISH);
                 int interval = Integer.parseInt(update.getMessage().getText());
 
                 String message_text_data = "Текущая дата: " + dateTimeFormatter.format(today) + ".\n"
@@ -118,6 +118,10 @@ public class HlamoBot extends TelegramLongPollingBot {
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
                     }
+                    break;
+
+                default:
+
                     break;
 
             }
