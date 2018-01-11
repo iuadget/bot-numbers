@@ -52,7 +52,7 @@ public class HlamoBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             } else if ((message_text.toLowerCase().contains(".".toLowerCase()))) {
-                //TODO расчте разницы до текущей и после текущей даты
+                //TODO расчет разницы до текущей и после текущей даты
                 try {
                     LocalDate today = LocalDate.now();
 
