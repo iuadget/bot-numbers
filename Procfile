@@ -1,1 +1,1 @@
-worker: java -jar target/tbot-numbers-1.0-SNAPSHOT.jar main.Main
+worker: java -cp target/classes/:target/dependency/* main.Main
