@@ -9,8 +9,8 @@
     <version>1.0-SNAPSHOT</version>
 
     <name>tbot-numbers_core</name>
-    <description>Telegram bot to guess the number.</description>
-    <url>https://www.example-site.org</url>
+    <description>Telegram bot to display the date.</description>
+    <url></url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
