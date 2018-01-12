@@ -8,12 +8,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.Locale;
 
 public class HlamoBot extends TelegramLongPollingBot {
 
@@ -23,58 +18,40 @@ public class HlamoBot extends TelegramLongPollingBot {
         // Set variables
         String user_first_name = update.getMessage().getChat().getFirstName();
         String user_last_name = update.getMessage().getChat().getLastName();
+        String userMessage = update.getMessage().getText();
         long user_id = update.getMessage().getChat().getId();
         long chat_id = update.getMessage().getChatId();
 
         // We check if the update has a message and the message has text
         if (update.hasMessage() && update.getMessage().hasText()) {
 
-            String message_text = update.getMessage().getText();
+             if (userMessage.chars().allMatch( Character::isDigit )) {
 
-            if (message_text.chars().allMatch( Character::isDigit )) {
-                LocalDate today = LocalDate.now();
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd",Locale.ENGLISH);
-                int interval = Integer.parseInt(update.getMessage().getText());
-
-                String message_text_data = "Текущая дата: " + dateTimeFormatter.format(today) + ".\n"
-                        + "через " + update.getMessage().getText() + " дней " + "будет: " +
-                        dateTimeFormatter.format(today.plusDays(interval));
-                String answer = message_text;
+                WillBeDate wd = new WillBeDate();
+                String answer = wd.willDate(userMessage);
 
                 SendMessage message = new SendMessage()
                         .setChatId(chat_id)
-                        .setText(message_text_data);
+                        .setText(answer);
 
-                log(user_first_name, user_last_name, Long.toString(user_id), message_text, answer);
+                log(user_first_name, user_last_name, Long.toString(user_id), userMessage, answer);
                 try {
                     execute(message);
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
-            } else if ((message_text.toLowerCase().contains(".".toLowerCase()))) {
-                //TODO расчет разницы до текущей и после текущей даты
+            } else if ((userMessage.toLowerCase().contains(".".toLowerCase()))) {
+                //TODO расчет разницы до текущей и после текущей даты (добавить условие)
                 try {
-                    LocalDate today = LocalDate.now();
 
-                    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.MM.dd",Locale.ENGLISH);
-                    LocalDate userDate = LocalDate.parse(message_text, format);
-
-                    Period p = Period.between(today, userDate);
-                    long p2 = ChronoUnit.DAYS.between(today, userDate);
-
-                    String message_text_data = "Разница между датами " +
-                            p.getYears() + " года(-ов), и " +
-                            p.getMonths() + " месяца(-ов), и " +
-                            p.getDays() + " дня(-ей). (" +
-                            "всего " +p2 + " дня(-ей)";
+                    PeriodBeDate pd = new PeriodBeDate();
+                    String answer = pd.periodDate(userMessage);
 
                     SendMessage message = new SendMessage()
                             .setChatId(chat_id)
-                            .setText(message_text_data);
-                    String answer = message_text;
+                            .setText(answer);
 
-                    log(user_first_name, user_last_name, Long.toString(user_id), message_text, answer);
-                    try {
+                    log(user_first_name, user_last_name, Long.toString(user_id), userMessage, answer);     try {
                         execute(message);
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
@@ -84,15 +61,15 @@ public class HlamoBot extends TelegramLongPollingBot {
 
                 }
 
-            } else if (!(message_text.chars().allMatch( Character::isDigit ))
-                    && !(message_text.toLowerCase().contains("/".toLowerCase()))
-                    && !(message_text.toLowerCase().contains(".".toLowerCase()))) {
+            } else if (!(userMessage.chars().allMatch( Character::isDigit ))
+                    && !(userMessage.toLowerCase().contains("/".toLowerCase()))
+                    && !(userMessage.toLowerCase().contains(".".toLowerCase()))) {
 
-                String messageSend = "Вы ввели: " + message_text;
+                String messageSend = "Вы ввели: " + userMessage;
                 SendMessage message = new SendMessage().setChatId(chat_id).setText(messageSend);
-                String answer = message_text;
+                String answer = userMessage;
 
-                log(user_first_name, user_last_name, Long.toString(user_id), message_text, answer);
+                log(user_first_name, user_last_name, Long.toString(user_id), userMessage, answer);
                 try {
                     execute(message);
                 } catch (TelegramApiException e) {
@@ -101,7 +78,7 @@ public class HlamoBot extends TelegramLongPollingBot {
 
             }
 
-            switch (message_text) {
+            switch (userMessage) {
 
                 case "/hello":
                     String message_text_hello = "Добро пожаловать, " + user_first_name + " " +
@@ -110,9 +87,9 @@ public class HlamoBot extends TelegramLongPollingBot {
                     SendMessage message_hello = new SendMessage()
                             .setChatId(chat_id)
                             .setText(message_text_hello);
-                    String answer = message_text;
+                    String answer = userMessage;
 
-                    log(user_first_name, user_last_name, Long.toString(user_id), message_text, answer);
+                    log(user_first_name, user_last_name, Long.toString(user_id), userMessage, answer);
                     try {
                         execute(message_hello);
                     } catch (TelegramApiException e) {
@@ -148,7 +125,7 @@ public class HlamoBot extends TelegramLongPollingBot {
         Date date = new Date();
         System.out.println(dateFormat.format(date));
         System.out.println("Сообщение от " + first_name + " " + last_name +
-                ". (id = " + user_id + ") \n Текст - " + txt);
-        System.out.println("Бот ответил: \n Текст - " + bot_answer);
+                ". (id = " + user_id + ")\n" + txt);
+        System.out.println("Бот ответил:\n" + bot_answer);
     }
 }
