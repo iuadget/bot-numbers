@@ -41,8 +41,7 @@ public class HlamoBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             } else if ((userMessage.toLowerCase().contains(".".toLowerCase()))) {
-                //TODO расчет разницы до текущей и после текущей даты (добавить условие)
-                try {
+                    try {
 
                     PeriodBeDate pd = new PeriodBeDate();
                     String answer = pd.periodDate(userMessage);
@@ -51,7 +50,8 @@ public class HlamoBot extends TelegramLongPollingBot {
                             .setChatId(chat_id)
                             .setText(answer);
 
-                    log(user_first_name, user_last_name, Long.toString(user_id), userMessage, answer);     try {
+                    log(user_first_name, user_last_name, Long.toString(user_id), userMessage, answer);
+                    try {
                         execute(message);
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
@@ -82,7 +82,7 @@ public class HlamoBot extends TelegramLongPollingBot {
 
                 case "/hello":
                     String message_text_hello = "Добро пожаловать, " + user_first_name + " " +
-                            user_last_name +"!" + "\n" + "Введите целое число или дату (ГГГГ.ММ.ДД).";
+                            user_last_name +"!" + "\n" + "Введите целое число или дату (ДД.ММ.ГГГГ).";
 
                     SendMessage message_hello = new SendMessage()
                             .setChatId(chat_id)

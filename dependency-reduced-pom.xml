@@ -5,8 +5,7 @@
   <artifactId>tbot-numbers</artifactId>
   <name>tbot-numbers_core</name>
   <version>1.0-SNAPSHOT</version>
-  <description>Telegram bot to guess the number.</description>
-  <url>https://www.example-site.org</url>
+  <description>Telegram bot to display the date.</description>
   <build>
     <plugins>
       <plugin>

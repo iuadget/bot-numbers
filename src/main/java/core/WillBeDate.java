@@ -2,22 +2,35 @@ package core;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Locale;
 
 public class WillBeDate {
 
+    public String formatDay (LocalDate date) {
+        return DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
+                .ofPattern("dd MMMM yyyy - EEEE")
+                .withLocale(new Locale("ru", "RU"))
+                .format(date);
+    }
+
     public String willDate (String userMessage){
         LocalDate today = LocalDate.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd", Locale.ENGLISH);
         int interval = Integer.parseInt(userMessage);
+        String textLeapYear;
 
-        String message_text_data = "Текущая дата: " + dateTimeFormatter.format(today) + "\n"
-                + "Через " + userMessage + " дней " + "будет: " +
-                dateTimeFormatter.format(today.plusDays(interval)) + "\n" +
-                "Год " + today.plusDays(interval).getYear() + " будет высокосный? - " + today.isLeapYear() +
-                "\n" + "День недели: " + today.plusDays(interval).getDayOfWeek();
+        if (today.isLeapYear()) {
+            textLeapYear = "Год " + today.plusDays(interval).getYear() + " будет високосный.";
+        } else {
+            textLeapYear = "Год " + today.plusDays(interval).getYear() + " будет не високосный.";
+        }
 
-        return message_text_data;
+        String answer = "Текущая дата: \n" + formatDay(today) + "\n"
+                + "Через " + userMessage + " дня(-ей) " + "будет: \n" +
+                formatDay(today.plusDays(interval)) + "\n" +
+                textLeapYear;
+
+        return answer;
     }
 
 }
