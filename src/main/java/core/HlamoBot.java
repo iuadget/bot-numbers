@@ -22,6 +22,8 @@ public class HlamoBot extends TelegramLongPollingBot {
         long user_id = update.getMessage().getChat().getId();
         long chat_id = update.getMessage().getChatId();
 
+        ParseDate parseUserDate = new ParseDate();
+
         // We check if the update has a message and the message has text
         if (update.hasMessage() && update.getMessage().hasText()) {
 
@@ -40,8 +42,9 @@ public class HlamoBot extends TelegramLongPollingBot {
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
-            } else if ((userMessage.toLowerCase().contains(".".toLowerCase()))) {
-                    try {
+            } else if (parseUserDate.isDateValid(userMessage)) {
+
+                 try {
 
                     PeriodBeDate pd = new PeriodBeDate();
                     String answer = pd.periodDate(userMessage);
@@ -61,11 +64,13 @@ public class HlamoBot extends TelegramLongPollingBot {
 
                 }
 
-            } else if (!(userMessage.chars().allMatch( Character::isDigit ))
-                    && !(userMessage.toLowerCase().contains("/".toLowerCase()))
-                    && !(userMessage.toLowerCase().contains(".".toLowerCase()))) {
+            } else {
 
-                String messageSend = "Вы ввели: " + userMessage;
+                String messageSend = "Добро пожаловать, "
+                        + user_first_name + " "
+                        + user_last_name +"!" + "\n"
+                        + "Введите целое число или дату в формате (ДД.ММ.ГГГГ).\n\n" +
+                        "Вы ввели: " + userMessage;
                 SendMessage message = new SendMessage().setChatId(chat_id).setText(messageSend);
                 String answer = userMessage;
 
@@ -75,31 +80,6 @@ public class HlamoBot extends TelegramLongPollingBot {
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
-
-            }
-
-            switch (userMessage) {
-
-                case "/hello":
-                    String message_text_hello = "Добро пожаловать, " + user_first_name + " " +
-                            user_last_name +"!" + "\n" + "Введите целое число или дату (ДД.ММ.ГГГГ).";
-
-                    SendMessage message_hello = new SendMessage()
-                            .setChatId(chat_id)
-                            .setText(message_text_hello);
-                    String answer = userMessage;
-
-                    log(user_first_name, user_last_name, Long.toString(user_id), userMessage, answer);
-                    try {
-                        execute(message_hello);
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-
-                default:
-
-                    break;
 
             }
 
@@ -120,6 +100,7 @@ public class HlamoBot extends TelegramLongPollingBot {
     }
 
     private void log(String first_name, String last_name, String user_id, String txt, String bot_answer) {
+        // TODO вынестив отдельный класс
         System.out.println("\n ----------------------------");
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY HH:mm:ss");
         Date date = new Date();
