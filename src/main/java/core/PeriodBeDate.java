@@ -14,7 +14,10 @@ public class PeriodBeDate {
         LocalDate userDate = LocalDate.parse(userMessage, format);
         Period p = Period.between(today, userDate);
         long p2 = ChronoUnit.DAYS.between(today, userDate);
-        String textYear, textMonth, textDay, textDayAll;
+        String textYear,
+                textMonth,
+                textDay,
+                textDayAll;
 
         if (p.getYears() == 1){
             textYear = " год, \n";
