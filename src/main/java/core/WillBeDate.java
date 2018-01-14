@@ -17,9 +17,10 @@ public class WillBeDate {
     public String willDate (String userMessage){
         LocalDate today = LocalDate.now();
         int interval = Integer.parseInt(userMessage);
-        String textLeapYear, textDay;
+        String textLeapYear,
+                textDay;
 
-        if (today.isLeapYear()) {
+        if (today.plusDays(interval).isLeapYear()) {
             textLeapYear = "Год " + today.plusDays(interval).getYear() + " будет високосный.";
         } else {
             textLeapYear = "Год " + today.plusDays(interval).getYear() + " будет не високосный.";
